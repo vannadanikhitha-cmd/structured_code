@@ -5,12 +5,12 @@ class JSONExporter:
 
     def __init__(self):
         self.columns = None
-
+    #Receives OCR bounding box
     def center_x(self, bbox):
         return sum(p[0] for p in bbox) / 4
 
     def convert(self, rows):
-
+        #head row with atleast one row should there
         if not rows or len(rows) < 2:
             return []
 
@@ -21,11 +21,11 @@ class JSONExporter:
             self.columns = []
 
             for cell in rows[0]["cells"]:
-
+                #added header name with x coordinate value
                 self.columns.append({"name": cell["text"],"x": self.center_x(cell["bbox"])})
 
             self.columns.sort(key=lambda x: x["x"])
-
+        #skip header row
         for row in rows[1:]:
 
             record = {col["name"]: ""for col in self.columns}
@@ -33,7 +33,7 @@ class JSONExporter:
             for cell in row["cells"]:
 
                 cell_x = self.center_x(cell["bbox"])
-
+                #add the data value to the nearest x value 
                 nearest = min(self.columns,key=lambda c:abs(c["x"] - cell_x))
 
                 if record[nearest["name"]]:

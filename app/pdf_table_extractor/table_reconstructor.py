@@ -1,5 +1,5 @@
 class TableReconstructor:
-
+    #take the vertical columns 
     def center_y(self, bbox):
         return sum(p[1] for p in bbox) / 4
     
@@ -13,7 +13,7 @@ class TableReconstructor:
                 x["bbox"]
             )
         )
-
+        #take the 20 pixels tolerance as same word
         tolerance = 20
 
         for word in words:

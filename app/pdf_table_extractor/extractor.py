@@ -1,22 +1,22 @@
 import cv2
 
-from app.pdf_table_extractor.pdf_loader import (
+from pdf_table_extractor.pdf_loader import (
     PDFLoader
 )
 
-from app.pdf_table_extractor.table_detector import (
+from pdf_table_extractor.table_detector import (
     TableDetector
 )
 
-from app.pdf_table_extractor.ocr_engine import (
+from pdf_table_extractor.ocr_engine import (
     OCREngine
 )
 
-from app.pdf_table_extractor.table_reconstructor import (
+from pdf_table_extractor.table_reconstructor import (
     TableReconstructor
 )
 
-from app.pdf_table_extractor.json_extractor import (
+from pdf_table_extractor.json_extractor import (
     JSONExporter
 )
 
@@ -94,9 +94,11 @@ def process_borderless_table(pdf_path):
     for page_idx, page in enumerate(pages):
 
         print("\n" + "=" * 60)
+        #page1/page137
         print(f"PAGE {page_idx + 1}/{len(pages)}")
+        #print separators
         print("=" * 60)
-
+        #detect tables in the page
         tables = detector.detect(page)
 
         print(f"Tables found: {len(tables)}")
@@ -110,29 +112,30 @@ def process_borderless_table(pdf_path):
                 x1, y1, x2, y2 = map(int,table_box)
 
                 # padding for better OCR
+                #Adds extra pixels around table
                 pad = 15
-
+                #expand the left top right bottom
                 x1 = max(0, x1 - pad)
                 y1 = max(0, y1 - pad)
                 x2 = min(page.shape[1], x2 + pad)
                 y2 = min(page.shape[0], y2 + pad)
 
                 table_img = page[y1:y2,x1:x2]
-
+                #white border around image.
                 table_img = cv2.copyMakeBorder(table_img,10, 10, 10, 10,cv2.BORDER_CONSTANT,value=(255, 255, 255))
 
                 if table_img.size == 0:
                     print("Empty crop, skipping.")
                     continue
-
+                #extract words in the table_img
                 words = ocr.extract(table_img)
 
                 print(f"OCR words: {len(words)}")
-
+                # { "y":100, "cells":[...] }
                 rows = reconstructor.build_table(words)
 
                 print(f"Rows reconstructed: {len(rows)}")
-
+                #store the header:value
                 json_rows = exporter.convert(rows)
 
                 print(f"JSON rows: {len(json_rows)}")
