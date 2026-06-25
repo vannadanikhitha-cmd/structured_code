@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from app.schemas.pdf_request import PDFRequest
-from app.services.pdf_extraction_service import (extract_table_from_pdf)
+from schemas.pdf_request import PDFRequest
+from services.pdf_extraction_service import (extract_table_from_pdf)
 
 router = APIRouter()
 
