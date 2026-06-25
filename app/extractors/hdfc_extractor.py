@@ -5,7 +5,7 @@ import pdfplumber
 def extract_transactions(pdf_path):
 
     all_rows = []
-
+    #Used to check whether text contains a date
     def is_valid_date(text):
         if not text:
             return False
@@ -31,6 +31,7 @@ def extract_transactions(pdf_path):
 
             # header detection (first valid occurrence)
             if raw and not headers:
+                #save headers
                 headers = [str(x).strip() for x in raw[0]]
 
                 xs = sorted({c[0] for c in table.cells} | {c[2] for c in table.cells})
@@ -120,4 +121,33 @@ def extract_transactions(pdf_path):
         if current_row:
             all_rows.append(current_row)
 
-    return all_rows
+    # ==========================================
+    # CLEAN DATA
+    # ==========================================
+
+    cleaned_rows = []
+
+    for row in all_rows:
+
+        clean_row = {}
+
+        for key, value in row.items():
+
+            if value is None:
+                value = ""
+
+            value = str(value)
+
+            value = value.replace("\n", " ")
+
+            value = re.sub(
+                r"\s+",
+                " ",
+                value
+            ).strip()
+
+            clean_row[key] = value
+
+        cleaned_rows.append(clean_row)
+
+    return cleaned_rows
