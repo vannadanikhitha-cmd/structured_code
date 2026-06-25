@@ -1,7 +1,7 @@
 import pdfplumber
-from app.helpers.text_cleaner import clean_text
-from app.extractors.key_value_extractor import extract_kv_from_line
-from app.extractors.hdfc_extractor import extract_transactions
+from helpers.text_cleaner import clean_text
+from extractors.key_value_extractor import extract_kv_from_line
+from extractors.hdfc_extractor import extract_transactions
 
 def process_pdf(pdf_path: str):
     table_data = []
@@ -56,10 +56,11 @@ def process_pdf(pdf_path: str):
                 lines_map[key].append((x0, text))
 
             # rebuild clean lines
+            #sort lines from top to bottom
             for _, words_line in sorted(lines_map.items()):
-
+                #sort lines from left to right by using x coordinates
                 words_line.sort(key=lambda x: x[0])
-
+                #remove the x coordinates and takes only text
                 line = " ".join([w[1] for w in words_line])
 
                 line = clean_text(line)

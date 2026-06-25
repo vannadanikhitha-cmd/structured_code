@@ -1,7 +1,7 @@
-from app.processors.pdf_processor import process_pdf
-from app.processors.table_validator import is_good_table
+from processors.pdf_processor import process_pdf
+from processors.table_validator import is_good_table
 
-from app.pdf_table_extractor.extractor import (process_borderless_table)
+from pdf_table_extractor.extractor import (process_borderless_table)
 
 
 def process_hybrid_pdf(pdf_path):
