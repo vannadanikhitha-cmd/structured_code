@@ -1,12 +1,12 @@
-from app.processors.pdf_processor import (
+from processors.pdf_processor import (
     process_pdf
 )
 
-from app.processors.table_validator import (
+from processors.table_validator import (
     is_good_table
 )
 
-from app.pdf_table_extractor.extractor import (
+from pdf_table_extractor.extractor import (
     process_borderless_table
 )
 
@@ -47,7 +47,7 @@ def process_hybrid_pdf(pdf_path):
 
     if not records:
         return [], outside_data
-
+    #add the headers as keys 
     headers = list(records[0].keys())
 
     converted_table = [headers]
